@@ -1,4 +1,4 @@
-name: Build APK (Release)
+name: Build APK (Standard Release)
 
 on:
   workflow_dispatch:
@@ -20,11 +20,15 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Build Release APK
-        run: ./gradlew assembleRelease
+      # (اختياري) يطبع لك أسماء مهام الـ assemble حتى نتأكد من الاسم الصحيح
+      - name: List assemble tasks
+        run: ./gradlew :app:tasks --all | grep -i assemble || true
+
+      - name: Build Standard Release APK
+        run: ./gradlew :app:assembleStandardRelease --stacktrace --info
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-apk
-          path: "**/build/outputs/apk/release/*.apk"
+          name: app-standard-release-apk
+          path: "**/build/outputs/apk/**/release/*.apk"
