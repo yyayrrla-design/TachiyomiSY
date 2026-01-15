@@ -1,4 +1,4 @@
-name: Build Debug APK
+name: Build APK (Release)
 
 on:
   workflow_dispatch:
@@ -8,9 +8,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
@@ -18,11 +20,11 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug-apk
-          path: "**/build/outputs/apk/debug/*.apk"
+          name: app-release-apk
+          path: "**/build/outputs/apk/release/*.apk"
