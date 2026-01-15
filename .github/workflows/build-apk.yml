@@ -1,4 +1,4 @@
-name: Build APK (Standard Release)
+name: Build Standard Release APK (Unsigned)
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Setup Java 17
@@ -17,18 +17,16 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Grant execute permission
-        run: chmod +x gradlew
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-      # (اختياري) يطبع لك أسماء مهام الـ assemble حتى نتأكد من الاسم الصحيح
-      - name: List assemble tasks
-        run: ./gradlew :app:tasks --all | grep -i assemble || true
+      # بناء النسخة اللي المشروع نفسه يستخدمها
+      - name: Build app (standardRelease)
+        run: ./gradlew assembleStandardRelease --stacktrace
 
-      - name: Build Standard Release APK
-        run: ./gradlew :app:assembleStandardRelease --stacktrace --info
-
-      - name: Upload APK
+      # رفع كل ملفات الـ APK الناتجة كـ Artifacts
+      - name: Upload APKs
         uses: actions/upload-artifact@v4
         with:
-          name: app-standard-release-apk
-          path: "**/build/outputs/apk/**/release/*.apk"
+          name: tachiyomiSY-standardRelease-apks
+          path: app/build/outputs/apk/standard/release/*.apk
